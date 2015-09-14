@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8" />
+    <title>Widget Container</title>
+    <script src="https://security-xinfinit.rhcloud.com/auth/js/keycloak.js"></script>
+    <script>
+      window.keycloak = Keycloak({
+        "realm": "xinfinit-realm",
+        "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtXFtchYKPZnBnPAC77I8okEl0YzqEsNjsCKpZjvfycRdhkkNrI6z5X3JYNM1NQxOHYl8NpKKAjpUqQYGT5dcl0LJIUuAjK4Wp8+a5INiUZ9hSfVsx5fJWcZCOxX0vuGWHaNuQctpNa0+2P23LyWqibbJ9BQU9HwZ9HJAFjvd5X/rVmDFEQzGbCLon2UQ5+E1v+UPNcq+56mhM9EHAAEyWgO56Z1L5EdSfg9rjGn1lJduFmqRNA7V9yjkkaaU/xdLuwIaH79/iXwNapUh9ya+nq6xqW9msbLPXVUfdtGUJYnyH9DHPVDCkbWBSzCoHs+IDlzGRoziGg4f+8zCgz7kyQIDAQAB",
+        "auth-server-url": "https://security-xinfinit.rhcloud.com/auth",
+        "ssl-required": "none",
+        "public-client": true,
+        "clientId": "xinfinit-client",
+        "enable-cors" : true
+      });
+      window.keycloak.init({onLoad: 'login-required', checkLoginIframe: false}).success(function (authenticated) {
+        console.log('keycloak.init: '+ window.keycloak.token);
+      }).error(function() {
+        console.log('keycloak.init: failed to initialize');
+      });
+      //Until there's a synchronous way to call updateToken from within KeycloakBearerTokenInterceptor (it's currently
+      //asynchronous), just attempt to refresh it every 10 sec.
+      setInterval(function() { window.keycloak.updateToken(); }, 10000);
+    </script>
+    <script src="http://dev-xinfinit.rhcloud.com/mxv_html/libs/jquery/jquery.js" type="text/javascript"></script>
+    <script src="http://dev-xinfinit.rhcloud.com/rest-js" type="text/javascript"></script>
+    <script src="http://dev-xinfinit.rhcloud.com/mxv_html/libs/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="http://dev-xinfinit.rhcloud.com/mxv_html/libs/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
+    <script src="http://dev-xinfinit.rhcloud.com/mxv_html/libs/json/json3.js" type="text/javascript"></script>
+    <script src="http://dev-xinfinit.rhcloud.com/mxv_html/src/js/solutions.js" type="text/javascript"></script>
+    <script src="http://dev-xinfinit.rhcloud.com/web/App/App.nocache.js" type="text/javascript"></script>
+    <script src="http://dev-xinfinit.rhcloud.com/mxv_html/libs/angularjs/angular.min.js" type="text/javascript"></script>
+
+    <script src="http://dev-xinfinit.rhcloud.com/web/streamingcontroller.js" type="text/javascript"></script>
+    <script type="text/javascript" src="app.js"></script>
+
+    <link href="http://dev-xinfinit.rhcloud.com/mxv_html/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="http://dev-xinfinit.rhcloud.com/mxv_html/libs/bootstrap-table/bootstrap-table.min.css" rel="stylesheet" type="text/css">
+    <link href="http://dev-xinfinit.rhcloud.com/mxv_html/libs/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="http://dev-xinfinit.rhcloud.com/mxv_html/src/css/mxvone.css" rel="stylesheet" type="text/css">
+
+    <style type="text/css">
+      .html .test_container {
+        min-height: 100px;
+        min-width: 400px;
+        background: #FEFDD4;
+        display: inline-block;
+        width: 100%;
+      }
+
+      .html .test_column {
+        width: 60px;
+        margin: 10px;
+        min-height: 15px;
+        float: left;
+      }
+
+      .html .testsymbol {
+        width: 60px;
+        margin: 10px;
+        min-height: 15px;
+        color:#000;
+        float: left;
+      }
+
+      .html .testgray {
+        background: #B8BAB8;
+        color:#000;
+      }
+
+      .html .testgreen {
+        background: #11CA00;
+        color:#3832FF;
+      }
+
+      .html .testred {
+        background: #E10000;
+        color:#FBFF32;
+      }
+
+      .html .testbid {
+        background:#FF9090;
+        width: 10px;
+        margin: 2px;
+        float: left;
+      }
+
+      .html .testask {
+        background:#A1FF90;
+        width: 10px;
+        margin: 2px;
+        float: left;
+      }
+    </style>
+    <script type="text/javascript">
+      erraiBusApplicationRoot = "http://dev-xinfinit.rhcloud.com/web";
+      var _properties = '';
+      function initModule( properties) {
+        log("initModule: "+properties);
+        _properties = properties;
+      }
+      function getProperties() {
+        return _properties;
+      }
+
+      $( document ).ready(function() {
+        onReady();
+      });
+    </script>
+  </head>
+
+  <body ng-app="container">
+
+  <div class="html" ng-controller="MainCtrl as main">
+    {{main.name}}
+    <br>
+    <table style="width: 100%;">
+      <tr>
+        <td style="width: 50%;">
+          <table style="width: 100%;">
+            <tr>
+              <td>Domain Name :</td>
+              <td>
+                <input type="text" required ng-model="main.domainName" style="width: 200px;"/>
+              </td>
+            </tr>
+            <tr>
+              <td>Widget ID :</td>
+              <td>
+                <input type="text" required ng-model="main.widgetId" style="width: 200px;"/>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <input type="button" ng-click="main.addWidgets($event)" style="cursor: pointer;color:#000;" value="Add Widget"/>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  </body>
+</html>
